@@ -1,16 +1,30 @@
 {
+"cleanUrls": true,
+"trailingSlash": false,
 "rewrites": [
 {
-"source": "/server-x/:path*",
-"destination": "http://103.31.134.180/:path*"
+"source": "/server-x",
+"destination": "http://103.31.134.180/"
 },
 {
-"source": "/server-xi/:path*",
-"destination": "http://103.31.134.181/:path*"
+"source": "/server-x/(.)",
+"destination": "http://103.31.134.180/$1"
 },
 {
-"source": "/server-xii/:path*",
-"destination": "http://103.31.134.182/:path*"
+"source": "/server-xi",
+"destination": "http://103.31.134.181/"
+},
+{
+"source": "/server-xi/(.)",
+"destination": "http://103.31.134.181/$1"
+},
+{
+"source": "/server-xii",
+"destination": "http://103.31.134.182/"
+},
+{
+"source": "/server-xii/(.*)",
+"destination": "http://103.31.134.182/$1"
 }
 ]
 }
