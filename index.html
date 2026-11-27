@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ExamBrowser SMAN 54">
     <title>ExamBrowser ASAS Ganjil 2026/2027 - SMAN 54 JAKARTA</title>
+
+    <!-- Web App Manifest & Icon SVG Dinamis (Agar Bisa Diinstal PWA di Laptop & Tablet) -->
+    <link id="pwa-manifest-link" rel="manifest" href="">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%230f172a'/%3E%3Cpath d='M256 76L104 140v108c0 97.6 64.8 188.8 152 212 87.2-23.2 152-114.4 152-212V140L256 76z' fill='%232563eb'/%3E%3Cpath d='M228 318l-58-58 24-24 34 34 86-86 24 24-110 110z' fill='%23ffffff'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%230f172a'/%3E%3Cpath d='M256 76L104 140v108c0 97.6 64.8 188.8 152 212 87.2-23.2 152-114.4 152-212V140L256 76z' fill='%232563eb'/%3E%3Cpath d='M228 318l-58-58 24-24 34 34 86-86 24 24-110 110z' fill='%23ffffff'/%3E%3C/svg%3E">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- Custom CSS Murni (Animasi & Kiosk Lock) -->
+    <!-- Custom CSS Murni -->
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -113,13 +119,13 @@
                         <span id="portal-live-clock">Memuat waktu...</span>
                     </div>
 
-                    <!-- Tombol Panduan Instalasi & PWA Install -->
+                    <!-- Tombol Instalasi Aplikasi & Panduan -->
                     <div class="flex items-center gap-2">
-                        <button id="btn-install-pwa" onclick="triggerPWAInstall()" class="hidden items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg shadow transition cursor-pointer">
+                        <button id="btn-install-pwa" onclick="triggerPWAInstall()" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg shadow transition cursor-pointer">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
                             </svg>
-                            <span>Instal Aplikasi</span>
+                            <span id="btn-install-label">Instal Aplikasi</span>
                         </button>
                         <button onclick="toggleModal('modal-install-guide', true)" class="flex items-center gap-1.5 bg-blue-800/70 hover:bg-blue-700/80 text-blue-100 border border-blue-500/40 font-semibold text-[11px] px-2.5 py-1 rounded-lg transition cursor-pointer">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -368,7 +374,7 @@
             <!-- Tengah: Hari, Tanggal & Waktu Real-Time -->
             <div class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-emerald-300">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="kiosk-live-clock">--:--:-- WIB</span>
+                <span id="kiosk-live-clock">Memuat waktu...</span>
             </div>
 
             <!-- Kanan: Penghitung Pelanggaran & Tombol Keluar Ujian -->
@@ -390,7 +396,7 @@
         <!-- Area Utama Ruang Ujian Terpantau (flex-1 agar Header & Footer selalu utuh) -->
         <main class="relative flex-1 min-h-0 w-full bg-slate-950 overflow-y-auto flex flex-col">
             
-            <!-- Mode Default: Kartu Session Monitor + Akses Langsung Server Ujian -->
+            <!-- Mode Panel Bantuan / Session Monitor -->
             <div id="session-monitor-panel" class="flex-1 flex items-center justify-center p-4 sm:p-6">
                 <div id="monitor-card-container" class="max-w-xl w-full bg-slate-900 border-2 border-emerald-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5 transition-colors">
                     
@@ -422,7 +428,7 @@
                     <!-- Penjelasan & Tombol Utama Buka Portal Ujian -->
                     <div class="space-y-3">
                         <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                            Gunakan tombol utama di bawah untuk membuka halaman login server ujian di jendela/tab baru tanpa terblokir kebijakan browser. Biarkan jendela <strong>ExamBrowser</strong> ini tetap aktif sebagai pengawas sesi hingga ujian selesai.
+                            Gunakan tombol utama di bawah untuk membuka halaman login server ujian di jendela/tab baru, atau kembali ke <strong>Mode Bingkai ExamBrowser</strong> jika menggunakan konfigurasi proxy HTTPS Vercel.
                         </p>
 
                         <!-- Tombol Utama Peluncur Server (<a href="..." target="_blank"> Asli) -->
@@ -460,19 +466,19 @@
                         </div>
                     </div>
 
-                    <!-- Footer Kartu & Opsi Cadangan Frame Lokal -->
+                    <!-- Footer Kartu & Opsi Mode Bingkai -->
                     <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-400">
                         <div>
                             Login: <strong class="text-slate-200">NIS (5 digit)</strong> &bull; Password awal: <strong class="text-slate-200">12345</strong>
                         </div>
                         <button type="button" onclick="toggleFrameMode(true)" class="text-blue-400 hover:text-blue-300 underline font-semibold cursor-pointer">
-                            Mode Frame (Lokal)
+                            Kembali ke Mode Bingkai (Frame)
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Mode Cadangan: Iframe Lokal (Khusus Jaringan Lokal HTTP) -->
+            <!-- Mode Bingkai ExamBrowser (Terintegrasi Proxy Vercel / Lokal) -->
             <div id="local-frame-wrapper" class="hidden w-full h-full flex-1 flex flex-col bg-white">
                 <div class="shrink-0 bg-slate-800 border-b border-slate-700 px-4 py-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] sm:text-xs text-slate-200">
                     <span class="flex items-center gap-2">
@@ -650,8 +656,8 @@
                     </h4>
                     <ol class="list-decimal list-inside space-y-1 text-blue-800">
                         <li>Buka tautan ExamBrowser menggunakan browser <strong>Chrome</strong> atau <strong>Edge</strong>.</li>
-                        <li>Klik tombol <strong>"Instal Aplikasi"</strong> di header kanan atas, atau klik ikon <strong>Install</strong> di ujung kanan bilah alamat URL.</li>
-                        <li>Konfirmasi <strong>Install</strong> agar pintasan ExamBrowser terpasang di Desktop / Start Menu Laptop.</li>
+                        <li>Klik tombol hijau <strong>"Instal Aplikasi"</strong> di header kanan atas, atau klik ikon <strong>Install / App available</strong> di ujung kanan bilah alamat URL browser.</li>
+                        <li>Konfirmasi <strong>Install</strong> agar aplikasi ExamBrowser terpasang sebagai jendela aplikasi mandiri di Desktop / Start Menu Laptop.</li>
                     </ol>
                 </div>
 
@@ -673,7 +679,7 @@
     </div>
 
     <!-- =====================================================================
-         6. TOAST NOTIFIKASI (PENGGANTI ALERT)
+         6. TOAST NOTIFIKASI
          ===================================================================== -->
     <div id="toast-box" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[70] bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-2.5 max-w-md w-[90%]">
         <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
@@ -681,7 +687,7 @@
     </div>
 
     <!-- =====================================================================
-         7. LOGIKA JAVASCRIPT UTAMA (TANPA AUDIO/ALARM)
+         7. LOGIKA JAVASCRIPT UTAMA (WAKTU REAL-TIME, PWA INSTALLER, KIOSK)
          ===================================================================== -->
     <script>
         /**
@@ -704,11 +710,196 @@
             violationCount: 0,
             violationLogs: [],
             portalWindowRef: null,
-            deferredInstallPrompt: null
+            deferredInstallPrompt: null,
+            pinActionMode: 'exit'
         };
-// ... existing code ... -->
+
         /**
-         * 3. MASUK KE MODE UJIAN TERPANTAU & BUKA SERVER UJIAN
+         * 1. PENUNJUK HARI, TANGGAL & WAKTU REAL-TIME (WIB)
+         */
+        const HARI_ID = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const BULAN_ID = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        function formatLiveDateTime() {
+            const now = new Date();
+            const hari = HARI_ID[now.getDay()];
+            const tgl = String(now.getDate()).padStart(2, '0');
+            const bulan = BULAN_ID[now.getMonth()];
+            const tahun = now.getFullYear();
+            const jam = String(now.getHours()).padStart(2, '0');
+            const menit = String(now.getMinutes()).padStart(2, '0');
+            const detik = String(now.getSeconds()).padStart(2, '0');
+            return `${hari}, ${tgl} ${bulan} ${tahun} • ${jam}:${menit}:${detik} WIB`;
+        }
+
+        function formatTimeOnly() {
+            const now = new Date();
+            const jam = String(now.getHours()).padStart(2, '0');
+            const menit = String(now.getMinutes()).padStart(2, '0');
+            const detik = String(now.getSeconds()).padStart(2, '0');
+            return `${jam}:${menit}:${detik} WIB`;
+        }
+
+        function startLiveClocks() {
+            const updateClocks = () => {
+                const formatted = formatLiveDateTime();
+                const portalClockEl = document.getElementById('portal-live-clock');
+                const kioskClockEl = document.getElementById('kiosk-live-clock');
+                if (portalClockEl) portalClockEl.textContent = formatted;
+                if (kioskClockEl) kioskClockEl.textContent = formatted;
+            };
+            updateClocks();
+            setInterval(updateClocks, 1000);
+        }
+
+        /**
+         * 2. INISIALISASI PWA (MANIFEST & SERVICE WORKER AGAR BISA DIINSTAL)
+         */
+        function initPWAInstaller() {
+            const originUrl = window.location.origin + window.location.pathname;
+            const iconSvgData = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%230f172a'/%3E%3Cpath d='M256 76L104 140v108c0 97.6 64.8 188.8 152 212 87.2-23.2 152-114.4 152-212V140L256 76z' fill='%232563eb'/%3E%3Cpath d='M228 318l-58-58 24-24 34 34 86-86 24 24-110 110z' fill='%23ffffff'/%3E%3C/svg%3E";
+
+            const manifestObj = {
+                name: "ExamBrowser ASAS Ganjil 2026/2027 - SMAN 54 JAKARTA",
+                short_name: "ExamBrowser 54",
+                description: "Aplikasi Ujian Terpantau ASAS Ganjil TP 2026/2027 SMAN 54 Jakarta",
+                start_url: originUrl,
+                scope: window.location.origin + "/",
+                display: "standalone",
+                orientation: "any",
+                background_color: "#0f172a",
+                theme_color: "#0f172a",
+                icons: [
+                    {
+                        src: iconSvgData,
+                        sizes: "192x192",
+                        type: "image/svg+xml",
+                        purpose: "any maskable"
+                    },
+                    {
+                        src: iconSvgData,
+                        sizes: "512x512",
+                        type: "image/svg+xml",
+                        purpose: "any maskable"
+                    }
+                ]
+            };
+
+            try {
+                const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+                const manifestUrl = URL.createObjectURL(manifestBlob);
+                const manifestLink = document.getElementById('pwa-manifest-link');
+                if (manifestLink) {
+                    manifestLink.href = manifestUrl;
+                }
+            } catch (err) {
+                console.warn('Manifest blob warning:', err);
+            }
+
+            // Daftarkan Service Worker ringan agar memenuhi syarat instalasi Chrome/Edge
+            if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+                const swCode = `
+                    self.addEventListener('install', (event) => { self.skipWaiting(); });
+                    self.addEventListener('activate', (event) => { event.waitUntil(self.clients.claim()); });
+                    self.addEventListener('fetch', (event) => { event.respondWith(fetch(event.request)); });
+                `;
+                try {
+                    const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                    const swUrl = URL.createObjectURL(swBlob);
+                    navigator.serviceWorker.register(swUrl).catch(() => {});
+                } catch (e) {}
+            }
+
+            // Tangkap event beforeinstallprompt dari browser Laptop / Android
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                state.deferredInstallPrompt = e;
+                const installBtn = document.getElementById('btn-install-pwa');
+                const installLabel = document.getElementById('btn-install-label');
+                if (installBtn) {
+                    installBtn.classList.remove('hidden');
+                    installBtn.classList.add('inline-flex');
+                }
+                if (installLabel) {
+                    installLabel.textContent = 'Instal Aplikasi Sekarang';
+                }
+            });
+
+            window.addEventListener('appinstalled', () => {
+                state.deferredInstallPrompt = null;
+                const installBtn = document.getElementById('btn-install-pwa');
+                if (installBtn) {
+                    installBtn.classList.add('hidden');
+                }
+                showToast('ExamBrowser berhasil diinstal ke perangkat Anda!');
+            });
+        }
+
+        async function triggerPWAInstall() {
+            if (state.deferredInstallPrompt) {
+                state.deferredInstallPrompt.prompt();
+                const choiceResult = await state.deferredInstallPrompt.userChoice;
+                if (choiceResult.outcome === 'accepted') {
+                    showToast('Memasang aplikasi ExamBrowser...');
+                }
+                state.deferredInstallPrompt = null;
+            } else {
+                // Jika browser (seperti Safari iPad atau prompt sudah muncul di address bar) tidak mengirim event otomatis
+                toggleModal('modal-install-guide', true);
+                showToast('Gunakan menu Install / Tambahkan ke Layar Utama pada browser Anda.');
+            }
+        }
+
+        /**
+         * 3. TEMA WARNA PER JENJANG SERVER (KELAS X HIJAU, XI BIRU, XII PINK)
+         */
+        function applyClassColorTheme(className) {
+            const badge = document.getElementById('kiosk-class-badge');
+            const dot = document.getElementById('kiosk-class-dot');
+            const card = document.getElementById('monitor-card-container');
+            const iconBox = document.getElementById('monitor-icon-box');
+            const statusPill = document.getElementById('monitor-status-pill');
+            const launchBtn = document.getElementById('btn-launch-server');
+
+            let theme = {
+                badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-extrabold',
+                dot: 'w-2 h-2 rounded-full bg-emerald-400 animate-ping',
+                card: 'max-w-xl w-full bg-slate-900 border-2 border-emerald-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5 transition-colors',
+                iconBox: 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 p-2.5 rounded-2xl shrink-0',
+                pill: 'inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30',
+                btn: 'w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base py-3.5 px-5 rounded-2xl shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2.5 transition cursor-pointer no-underline'
+            };
+
+            if (className === 'Kelas XI') {
+                theme = {
+                    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-extrabold',
+                    dot: 'w-2 h-2 rounded-full bg-blue-400 animate-ping',
+                    card: 'max-w-xl w-full bg-slate-900 border-2 border-blue-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5 transition-colors',
+                    iconBox: 'bg-blue-600/20 text-blue-400 border border-blue-500/30 p-2.5 rounded-2xl shrink-0',
+                    pill: 'inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30',
+                    btn: 'w-full bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base py-3.5 px-5 rounded-2xl shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2.5 transition cursor-pointer no-underline'
+                };
+            } else if (className === 'Kelas XII') {
+                theme = {
+                    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-pink-500/20 text-pink-300 border border-pink-500/30 text-xs font-extrabold',
+                    dot: 'w-2 h-2 rounded-full bg-pink-400 animate-ping',
+                    card: 'max-w-xl w-full bg-slate-900 border-2 border-pink-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5 transition-colors',
+                    iconBox: 'bg-pink-600/20 text-pink-400 border border-pink-500/30 p-2.5 rounded-2xl shrink-0',
+                    pill: 'inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-pink-500/20 text-pink-300 border border-pink-500/30',
+                    btn: 'w-full bg-pink-600 hover:bg-pink-500 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base py-3.5 px-5 rounded-2xl shadow-lg shadow-pink-600/25 flex items-center justify-center gap-2.5 transition cursor-pointer no-underline'
+                };
+            }
+
+            if (badge) badge.className = theme.badge;
+            if (dot) dot.className = theme.dot;
+            if (card) card.className = theme.card;
+            if (iconBox) iconBox.className = theme.iconBox;
+            if (statusPill) statusPill.className = theme.pill;
+            if (launchBtn) launchBtn.className = theme.btn;
+        }
+
+        /**
+         * 4. MASUK KE MODE UJIAN TERPANTAU & BUKA SERVER UJIAN
          */
         function handleServerCardClick(event, className, serverUrl, proxyPath) {
             if (event) {
@@ -731,10 +922,8 @@
             document.getElementById('monitor-class-heading').textContent = `RUANG UJIAN ${className.toUpperCase()}`;
             document.getElementById('monitor-server-ip').textContent = cleanIp;
 
-            // Terapkan rona warna sesuai jenjang kelas (Kelas X: Hijau, Kelas XI: Biru, Kelas XII: Pink)
             applyClassColorTheme(className);
 
-            // Setel href dinamis pada tombol peluncur <a> asli
             const launchLink = document.getElementById('btn-launch-server');
             if (launchLink) {
                 launchLink.href = serverUrl;
@@ -742,7 +931,7 @@
 
             updatePortalLaunchStatus('ready', cleanIp);
 
-            // Otomatis buka dalam Mode Bingkai (Frame) menggunakan jalur Proxy HTTPS Vercel agar header & footer ExamBro tetap tampil
+            // Otomatis buka dalam Mode Bingkai (Frame) menggunakan Proxy HTTPS Vercel jika diakses via HTTPS
             const isHostedHttps = window.location.protocol === 'https:' && !window.location.hostname.includes('googleusercontent');
             toggleFrameMode(isHostedHttps);
 
@@ -758,14 +947,66 @@
                 state.isExamActive = true;
             }, 600);
         }
-// ... existing code ... -->
+
+        function onLaunchServerLinkClick() {
+            const cleanIp = state.serverUrl.replace('http://', '');
+            updatePortalLaunchStatus('opened', cleanIp);
+            showToast(`Membuka portal ujian ${cleanIp} di tab baru...`);
+        }
+
+        function openDirectInCurrentTab() {
+            if (!state.serverUrl) return;
+            state.isExamActive = false;
+            showToast(`Mengarahkan langsung ke ${state.serverUrl}...`);
+            window.location.assign(state.serverUrl);
+        }
+
+        function copyServerIpAddress() {
+            if (!state.serverUrl) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(state.serverUrl).then(() => {
+                    showToast(`Alamat server ${state.serverUrl} berhasil disalin!`);
+                }).catch(() => {
+                    fallbackCopyText(state.serverUrl);
+                });
+            } else {
+                fallbackCopyText(state.serverUrl);
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const input = document.createElement('input');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showToast(`Alamat server ${text} disalin!`);
+        }
+
+        function updatePortalLaunchStatus(mode, ipAddress) {
+            const dot = document.getElementById('status-dot');
+            const title = document.getElementById('status-title');
+            const desc = document.getElementById('status-desc');
+            if (!dot || !title || !desc) return;
+
+            if (mode === 'opened') {
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0 animate-pulse';
+                title.textContent = `Tautan portal ujian (${ipAddress}) telah dibuka.`;
+                desc.innerHTML = 'Silakan login menggunakan <strong>NIS (5 digit)</strong> dan password <strong>12345</strong>. Jika tab baru tertahan, klik <strong>Buka di Tab Ini (Direct)</strong>.';
+            } else {
+                dot.className = 'w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0';
+                title.textContent = `Siap menghubungkan ke server ${ipAddress}...`;
+                desc.innerHTML = 'Gunakan tombol hijau di atas untuk membuka halaman login, atau kembali ke <strong>Mode Bingkai (Frame)</strong>.';
+            }
+        }
+
         function toggleFrameMode(enable) {
             state.isFrameMode = enable;
             const monitorPanel = document.getElementById('session-monitor-panel');
             const frameWrapper = document.getElementById('local-frame-wrapper');
             const iframe = document.getElementById('exam-iframe');
 
-            // Gunakan jalur proxy HTTPS jika diakses via domain HTTPS (Vercel), atau IP langsung jika via HTTP lokal
             const targetFrameSrc = (window.location.protocol === 'https:' && state.proxyPath)
                 ? state.proxyPath
                 : state.serverUrl;
@@ -792,4 +1033,253 @@
                 showToast('Memuat ulang halaman server ujian...');
             }
         }
-// ... existing code ... -->
+
+        async function requestAppFullscreen() {
+            const elem = document.documentElement;
+            try {
+                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    if (elem.requestFullscreen) {
+                        await elem.requestFullscreen();
+                    } else if (elem.webkitRequestFullscreen) {
+                        await elem.webkitRequestFullscreen();
+                    }
+                }
+            } catch (err) {
+                // Diabaikan jika dibatasi sandbox pratinjau
+            }
+        }
+
+        function exitAppFullscreen() {
+            try {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else if (document.webkitFullscreenElement) {
+                    document.webkitExitFullscreen();
+                }
+            } catch (err) {}
+        }
+
+        /**
+         * 5. DETEKSI PELANGGARAN & POP-UP PERINGATAN (TANPA ALARM SUARA)
+         */
+        let lastViolationTime = 0;
+
+        function recordViolation(reason) {
+            if (!state.isExamActive) return;
+
+            const now = Date.now();
+            if (now - lastViolationTime < 1200) return;
+            lastViolationTime = now;
+
+            state.violationCount += 1;
+            const timeStr = formatTimeOnly();
+            state.violationLogs.unshift(`[${timeStr}] #${state.violationCount} - ${reason}`);
+
+            updateViolationUI();
+            showViolationPopup(reason, timeStr, false);
+        }
+
+        function previewViolationPopup() {
+            const timeStr = formatTimeOnly();
+            showViolationPopup('Simulasi Perpindahan Tab / Layar Ujian', timeStr, true);
+        }
+
+        function showViolationPopup(reason, timeStr, isPreview) {
+            state.isPreviewMode = isPreview;
+            document.getElementById('violation-reason-text').textContent = reason;
+            document.getElementById('violation-timestamp-text').textContent = timeStr;
+            document.getElementById('violation-modal-count').textContent = isPreview ? 'SIMULASI' : state.violationCount;
+
+            const previewBadge = document.getElementById('popup-preview-badge');
+            const dismissBtn = document.getElementById('btn-dismiss-violation');
+            const supBtn = document.getElementById('btn-supervisor-from-popup');
+            const logListEl = document.getElementById('violation-log-list');
+
+            if (isPreview) {
+                previewBadge.classList.remove('hidden');
+                dismissBtn.textContent = 'Tutup Simulasi Peringatan';
+                supBtn.classList.add('hidden');
+                logListEl.innerHTML = `<div>[${timeStr}] SIMULASI - Contoh tampilan pop-up peringatan saat siswa keluar dari layar ujian.</div>`;
+            } else {
+                previewBadge.classList.add('hidden');
+                dismissBtn.textContent = 'Kembali ke Layar Penuh Ujian';
+                supBtn.classList.remove('hidden');
+                logListEl.innerHTML = state.violationLogs
+                    .map(item => `<div>${item}</div>`)
+                    .join('');
+            }
+
+            document.getElementById('violation-overlay').classList.remove('hidden');
+        }
+
+        function updateViolationUI() {
+            const countDisplay = document.getElementById('violation-count-display');
+            const badge = document.getElementById('violation-badge');
+            if (countDisplay) {
+                countDisplay.textContent = state.violationCount;
+            }
+            if (badge && state.violationCount > 0) {
+                badge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-600 text-white border border-red-400 text-xs font-bold animate-pulse';
+            }
+        }
+
+        async function resumeFullscreenAndDismissPopup() {
+            document.getElementById('violation-overlay').classList.add('hidden');
+            if (!state.isPreviewMode) {
+                await requestAppFullscreen();
+            }
+            state.isPreviewMode = false;
+        }
+
+        // Listener perpindahan tab / aplikasi
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && state.isExamActive) {
+                recordViolation('Membuka Tab Baru / Meminimalkan Layar Ujian');
+            }
+        });
+
+        // Listener kehilangan fokus jendela (split-screen / pindah aplikasi)
+        window.addEventListener('blur', () => {
+            if (state.isExamActive) {
+                setTimeout(() => {
+                    if (document.activeElement !== document.getElementById('exam-iframe')) {
+                        recordViolation('Keluar dari Fokus Jendela ExamBrowser');
+                    }
+                }, 150);
+            }
+        });
+
+        // Listener keluar dari fullscreen
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && state.isExamActive) {
+                recordViolation('Keluar dari Mode Layar Penuh (Fullscreen)');
+            }
+        });
+
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.webkitFullscreenElement && state.isExamActive) {
+                recordViolation('Keluar dari Mode Layar Penuh (Fullscreen)');
+            }
+        });
+
+        // Blokir klik kanan & pintasan berbahaya saat ujian berlangsung
+        document.addEventListener('contextmenu', (e) => {
+            if (state.isExamActive) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!state.isExamActive) return;
+
+            const forbiddenKeys = ['F12', 'F11', 'F5'];
+            if (
+                forbiddenKeys.includes(e.key) ||
+                (e.ctrlKey && ['t', 'n', 'w', 'r', 'u', 'p', 's', 'h', 'j'].includes(e.key.toLowerCase())) ||
+                (e.ctrlKey && e.shiftKey && ['i', 'j', 'c', 'n'].includes(e.key.toLowerCase())) ||
+                (e.altKey && e.key === 'Tab')
+            ) {
+                e.preventDefault();
+                recordViolation(`Menekan Pintasan Terlarang (${e.key.toUpperCase()})`);
+            }
+        });
+
+        /**
+         * 6. MODAL VERIFIKASI PIN PENGAWAS
+         */
+        function openExitPinModal() {
+            state.pinActionMode = 'exit';
+            document.getElementById('modal-pin-title').textContent = 'Verifikasi PIN Pengawas';
+            document.getElementById('modal-pin-desc').textContent = 'Masukkan PIN Pengawas untuk mengakhiri sesi ujian';
+            document.getElementById('supervisor-pin-input').value = '';
+            document.getElementById('pin-error-msg').classList.add('hidden');
+            toggleModal('modal-pin', true);
+            setTimeout(() => document.getElementById('supervisor-pin-input').focus(), 100);
+        }
+
+        function openSupervisorResetFromPopup() {
+            state.pinActionMode = 'dismiss_popup';
+            document.getElementById('modal-pin-title').textContent = 'Otorisasi Pengawas Ruang';
+            document.getElementById('modal-pin-desc').textContent = 'Masukkan PIN Pengawas untuk membuka kunci peringatan';
+            document.getElementById('supervisor-pin-input').value = '';
+            document.getElementById('pin-error-msg').classList.add('hidden');
+            toggleModal('modal-pin', true);
+            setTimeout(() => document.getElementById('supervisor-pin-input').focus(), 100);
+        }
+
+        function closePinModal() {
+            toggleModal('modal-pin', false);
+        }
+
+        async function verifySupervisorPin() {
+            const inputVal = document.getElementById('supervisor-pin-input').value.trim();
+            const errorMsg = document.getElementById('pin-error-msg');
+
+            if (inputVal !== CONFIG.SUPERVISOR_PIN) {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('supervisor-pin-input').value = '';
+                document.getElementById('supervisor-pin-input').focus();
+                return;
+            }
+
+            errorMsg.classList.add('hidden');
+            closePinModal();
+
+            if (state.pinActionMode === 'dismiss_popup') {
+                document.getElementById('violation-overlay').classList.add('hidden');
+                await requestAppFullscreen();
+                showToast('Kunci peringatan dibuka oleh Pengawas.');
+            } else {
+                state.isExamActive = false;
+                document.getElementById('violation-overlay').classList.add('hidden');
+                document.getElementById('exam-view').classList.add('hidden');
+                document.getElementById('lobby-view').classList.remove('hidden');
+                document.body.classList.remove('exam-active');
+                document.getElementById('exam-iframe').src = 'about:blank';
+                exitAppFullscreen();
+                showToast('Sesi ujian telah diakhiri oleh Pengawas.');
+            }
+        }
+
+        /**
+         * 7. UTILITAS MODAL & TOAST NOTIFIKASI
+         */
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        let toastTimeout = null;
+        function showToast(message) {
+            const box = document.getElementById('toast-box');
+            const msgEl = document.getElementById('toast-message');
+            if (!box || !msgEl) return;
+
+            msgEl.textContent = message;
+            box.classList.remove('hidden');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 3500);
+        }
+
+        // Jalankan Jam Real-Time & Inisialisasi PWA Segera Saat Halaman Siap
+        document.addEventListener('DOMContentLoaded', () => {
+            startLiveClocks();
+            initPWAInstaller();
+        });
+    </script>
+</body>
+</html>
+```
+
+### Rincian Perbaikan yang Diterapkan:
+1. **Waktu Real-Time Langsung Muncul (`startLiveClocks()`):** Menambahkan kembali fungsi jam dan tanggal bahasa Indonesia (`Hari, DD Bulan YYYY • HH:MM:SS WIB`) yang langsung berjalan otomatis saat halaman dimuat, baik pada header menu utama (`#portal-live-clock`) maupun bilah atas setiap server (`#kiosk-live-clock`).
+2. **Aplikasi Bisa Diinstal (PWA Installer & Manifest):**
+   - Menambahkan **Web App Manifest dinamis**, ikon aplikasi SVG resolusi tinggi (`192x192` & `512x512`), pendaftaran **Service Worker**, serta tombol **"Instal Aplikasi"** yang selalu terlihat di header kanan atas agar mudah dipasang di Laptop (Chrome/Edge) maupun Tablet Android/iPad.
