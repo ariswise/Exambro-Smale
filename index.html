@@ -148,7 +148,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <!-- Kartu Kelas X (Rona Hijau / Emerald) -->
-                    <a href="http://103.31.134.180" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas X', 'http://103.31.134.180')" class="group text-left bg-gradient-to-br from-emerald-50/90 via-white to-emerald-100/50 hover:from-emerald-100/80 hover:to-emerald-50 rounded-2xl p-3.5 sm:p-4 border-2 border-emerald-200 hover:border-emerald-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
+                    <a href="http://103.31.134.180" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas X', 'http://103.31.134.180', '/server-x/')" class="group text-left bg-gradient-to-br from-emerald-50/90 via-white to-emerald-100/50 hover:from-emerald-100/80 hover:to-emerald-50 rounded-2xl p-3.5 sm:p-4 border-2 border-emerald-200 hover:border-emerald-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-600 text-white shadow-xs">
@@ -174,7 +174,7 @@
                     </a>
 
                     <!-- Kartu Kelas XI (Rona Biru / Blue) -->
-                    <a href="http://103.31.134.181" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas XI', 'http://103.31.134.181')" class="group text-left bg-gradient-to-br from-blue-50/90 via-white to-blue-100/50 hover:from-blue-100/80 hover:to-blue-50 rounded-2xl p-3.5 sm:p-4 border-2 border-blue-200 hover:border-blue-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
+                    <a href="http://103.31.134.181" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas XI', 'http://103.31.134.181', '/server-xi/')" class="group text-left bg-gradient-to-br from-blue-50/90 via-white to-blue-100/50 hover:from-blue-100/80 hover:to-blue-50 rounded-2xl p-3.5 sm:p-4 border-2 border-blue-200 hover:border-blue-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-600 text-white shadow-xs">
@@ -200,7 +200,7 @@
                     </a>
 
                     <!-- Kartu Kelas XII (Rona Pink / Merah Muda) -->
-                    <a href="http://103.31.134.182" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas XII', 'http://103.31.134.182')" class="group text-left bg-gradient-to-br from-pink-50/90 via-white to-pink-100/50 hover:from-pink-100/80 hover:to-pink-50 rounded-2xl p-3.5 sm:p-4 border-2 border-pink-200 hover:border-pink-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
+                    <a href="http://103.31.134.182" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas XII', 'http://103.31.134.182', '/server-xii/')" class="group text-left bg-gradient-to-br from-pink-50/90 via-white to-pink-100/50 hover:from-pink-100/80 hover:to-pink-50 rounded-2xl p-3.5 sm:p-4 border-2 border-pink-200 hover:border-pink-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-pink-600 text-white shadow-xs">
@@ -474,16 +474,17 @@
 
             <!-- Mode Cadangan: Iframe Lokal (Khusus Jaringan Lokal HTTP) -->
             <div id="local-frame-wrapper" class="hidden w-full h-full flex-1 flex flex-col bg-white">
-                <div class="shrink-0 bg-amber-50 border-b border-amber-200 px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-amber-900">
-                    <span>
-                        <strong>Mode Frame (Lokal):</strong> Jika layar di bawah tampak putih karena kebijakan HTTPS ke HTTP, gunakan tombol di kanan untuk kembali ke Session Monitor.
+                <div class="shrink-0 bg-slate-800 border-b border-slate-700 px-4 py-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] sm:text-xs text-slate-200">
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span><strong>Mode Bingkai ExamBrowser Aktif:</strong> Halaman ujian berjalan di dalam pengawasan layar penuh.</span>
                     </span>
                     <div class="flex items-center gap-2">
-                        <button onclick="reloadExamFrame()" class="bg-amber-200/80 hover:bg-amber-300 text-amber-950 font-bold px-2.5 py-1 rounded-lg cursor-pointer">
-                            Muat Ulang
+                        <button onclick="reloadExamFrame()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-2.5 py-1 rounded-lg transition cursor-pointer">
+                            Muat Ulang Halaman
                         </button>
-                        <button onclick="toggleFrameMode(false)" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-2.5 py-1 rounded-lg cursor-pointer">
-                            Kembali ke Session Monitor
+                        <button onclick="toggleFrameMode(false)" class="bg-slate-700 hover:bg-slate-600 text-slate-100 font-bold px-2.5 py-1 rounded-lg transition cursor-pointer">
+                            Panel Bantuan / Buka Tab Baru
                         </button>
                     </div>
                 </div>
@@ -492,7 +493,6 @@
                     src="about:blank" 
                     class="w-full flex-1 border-0 block bg-white"
                     allow="fullscreen"
-                    referrerpolicy="no-referrer"
                 ></iframe>
             </div>
         </main>
@@ -700,124 +700,27 @@
             isFrameMode: false,
             selectedClass: '',
             serverUrl: '',
+            proxyPath: '',
             violationCount: 0,
             violationLogs: [],
             portalWindowRef: null,
             deferredInstallPrompt: null
         };
-
-        /**
-         * 1. JAM & TANGGAL REAL-TIME (WIB)
-         */
-        function updateLiveDateTime() {
-            const now = new Date();
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const months = [
-                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-            ];
-
-            const dayName = days[now.getDay()];
-            const dateNum = String(now.getDate()).padStart(2, '0');
-            const monthName = months[now.getMonth()];
-            const yearNum = now.getFullYear();
-
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-
-            const fullText = `${dayName}, ${dateNum} ${monthName} ${yearNum} • ${hours}:${minutes}:${seconds} WIB`;
-            const compactText = `${dayName}, ${dateNum} ${monthName.slice(0, 3)} ${yearNum} • ${hours}:${minutes}:${seconds}`;
-
-            const portalClockEl = document.getElementById('portal-live-clock');
-            if (portalClockEl) {
-                portalClockEl.textContent = fullText;
-            }
-
-            const kioskClockEl = document.getElementById('kiosk-live-clock');
-            if (kioskClockEl) {
-                kioskClockEl.textContent = window.innerWidth < 640 ? compactText : fullText;
-            }
-        }
-
-        updateLiveDateTime();
-        setInterval(updateLiveDateTime, 1000);
-
-        /**
-         * 2. INISIALISASI PWA MANIFEST & SERVICE WORKER DINAMIS
-         */
-        (function setupPWA() {
-            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0f172a"/><path d="M256 72L112 136v112c0 98.4 61.4 189.8 144 216 82.6-26.2 144-117.6 144-216V136L256 72zm-24 276l-68-68 28.3-28.3L232 291.4l87.7-87.7L348 232 232 348z" fill="#3b82f6"/></svg>`;
-            const iconUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgIcon);
-
-            const manifest = {
-                name: 'ExamBrowser ASAS - SMAN 54 JAKARTA',
-                short_name: 'ExamBrowser',
-                description: 'Aplikasi ExamBrowser ASAS Ganjil TP 2026/2027 SMAN 54 Jakarta',
-                start_url: window.location.href,
-                display: 'standalone',
-                orientation: 'any',
-                background_color: '#0f172a',
-                theme_color: '#0f172a',
-                icons: [
-                    { src: iconUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
-                    { src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
-                ]
-            };
-
-            try {
-                const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-                const manifestURL = URL.createObjectURL(blob);
-                const link = document.createElement('link');
-                link.rel = 'manifest';
-                link.href = manifestURL;
-                document.head.appendChild(link);
-            } catch (e) {}
-
-            if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
-                const swCode = `
-                    self.addEventListener('install', (e) => self.skipWaiting());
-                    self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
-                    self.addEventListener('fetch', (e) => {});
-                `;
-                try {
-                    const swBlob = new Blob([swCode], { type: 'application/javascript' });
-                    const swUrl = URL.createObjectURL(swBlob);
-                    navigator.serviceWorker.register(swUrl).catch(() => {});
-                } catch (err) {}
-            }
-        })();
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            state.deferredInstallPrompt = e;
-            const installBtn = document.getElementById('btn-install-pwa');
-            if (installBtn) {
-                installBtn.classList.remove('hidden');
-                installBtn.classList.add('flex');
-            }
-        });
-
-        async function triggerPWAInstall() {
-            if (!state.deferredInstallPrompt) {
-                toggleModal('modal-install-guide', true);
-                return;
-            }
-            state.deferredInstallPrompt.prompt();
-            const { outcome } = await state.deferredInstallPrompt.userChoice;
-            if (outcome === 'accepted') {
-                showToast('Aplikasi ExamBrowser berhasil diinstal ke perangkat!');
-                document.getElementById('btn-install-pwa').classList.add('hidden');
-            }
-            state.deferredInstallPrompt = null;
-        }
-
+// ... existing code ... -->
         /**
          * 3. MASUK KE MODE UJIAN TERPANTAU & BUKA SERVER UJIAN
          */
-        async function startExam(className, serverUrl) {
+        function handleServerCardClick(event, className, serverUrl, proxyPath) {
+            if (event) {
+                event.preventDefault();
+            }
+            startExam(className, serverUrl, proxyPath);
+        }
+
+        async function startExam(className, serverUrl, proxyPath) {
             state.selectedClass = className;
             state.serverUrl = serverUrl;
+            state.proxyPath = proxyPath || serverUrl;
             state.violationCount = 0;
             state.violationLogs = [];
             updateViolationUI();
@@ -838,7 +741,10 @@
             }
 
             updatePortalLaunchStatus('ready', cleanIp);
-            toggleFrameMode(false);
+
+            // Otomatis buka dalam Mode Bingkai (Frame) menggunakan jalur Proxy HTTPS Vercel agar header & footer ExamBro tetap tampil
+            const isHostedHttps = window.location.protocol === 'https:' && !window.location.hostname.includes('googleusercontent');
+            toggleFrameMode(isHostedHttps);
 
             document.getElementById('lobby-view').classList.add('hidden');
             document.getElementById('exam-view').classList.remove('hidden');
@@ -852,186 +758,23 @@
                 state.isExamActive = true;
             }, 600);
         }
-
-        function applyClassColorTheme(className) {
-            const badge = document.getElementById('kiosk-class-badge');
-            const dot = document.getElementById('kiosk-class-dot');
-            const card = document.getElementById('monitor-card-container');
-            const iconBox = document.getElementById('monitor-icon-box');
-            const statusPill = document.getElementById('monitor-status-pill');
-            const launchBtn = document.getElementById('btn-launch-server');
-
-            const themes = {
-                'Kelas X': {
-                    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-extrabold',
-                    dot: 'w-2 h-2 rounded-full bg-emerald-400 animate-ping',
-                    card: 'max-w-xl w-full bg-slate-900 border-2 border-emerald-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5 transition-colors',
-                    iconBox: 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 p-2.5 rounded-2xl shrink-0',
-                    statusPill: 'inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30',
-                    launchBtn: 'w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base py-3.5 px-5 rounded-2xl shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2.5 transition cursor-pointer no-underline'
-                },
-                'Kelas XI': {
-                    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/40 text-xs font-extrabold',
-                    dot: 'w-2 h-2 rounded-full bg-blue-400 animate-ping',
-                    card: 'max-w-xl w-full bg-slate-900 border-2 border-blue-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5 transition-colors',
-                    iconBox: 'bg-blue-600/20 text-blue-400 border border-blue-500/30 p-2.5 rounded-2xl shrink-0',
-                    statusPill: 'inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30',
-                    launchBtn: 'w-full bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base py-3.5 px-5 rounded-2xl shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2.5 transition cursor-pointer no-underline'
-                },
-                'Kelas XII': {
-                    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-pink-500/20 text-pink-300 border border-pink-500/40 text-xs font-extrabold',
-                    dot: 'w-2 h-2 rounded-full bg-pink-400 animate-ping',
-                    card: 'max-w-xl w-full bg-slate-900 border-2 border-pink-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5 transition-colors',
-                    iconBox: 'bg-pink-600/20 text-pink-400 border border-pink-500/30 p-2.5 rounded-2xl shrink-0',
-                    statusPill: 'inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-pink-500/20 text-pink-300 border border-pink-500/30',
-                    launchBtn: 'w-full bg-pink-600 hover:bg-pink-500 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base py-3.5 px-5 rounded-2xl shadow-lg shadow-pink-600/25 flex items-center justify-center gap-2.5 transition cursor-pointer no-underline'
-                }
-            };
-
-            const activeTheme = themes[className] || themes['Kelas X'];
-            if (badge) badge.className = activeTheme.badge;
-            if (dot) dot.className = activeTheme.dot;
-            if (card) card.className = activeTheme.card;
-            if (iconBox) iconBox.className = activeTheme.iconBox;
-            if (statusPill) statusPill.className = activeTheme.statusPill;
-            if (launchBtn) launchBtn.className = activeTheme.launchBtn;
-        }
-
-        function openExamPortalDirect() {
 // ... existing code ... -->
-            document.getElementById('violation-overlay').classList.add('hidden');
-            document.getElementById('exam-view').classList.add('hidden');
-            document.getElementById('exam-iframe').src = 'about:blank';
-            document.getElementById('lobby-view').classList.remove('hidden');
-
-            showToast('Sesi ujian telah diakhiri oleh Pengawas.');
-        }
-
-        /**
-         * 3. MASUK KE MODE UJIAN TERPANTAU & PELUNCURAN SERVER (ANTI-POPUP BLOCKER)
-         */
-        function handleServerCardClick(event, className, serverUrl) {
-            // Mencegah navigasi langsung agar aplikasi masuk ke layar Ruang Ujian Terpantau terlebih dahulu
-            if (event) {
-                event.preventDefault();
-            }
-            startExam(className, serverUrl);
-        }
-
-        async function startExam(className, serverUrl) {
-            state.selectedClass = className;
-            state.serverUrl = serverUrl;
-            state.violationCount = 0;
-            state.violationLogs = [];
-            updateViolationUI();
-
-            const cleanIp = serverUrl.replace('http://', '');
-            document.getElementById('kiosk-class-label').textContent = className.toUpperCase();
-            document.getElementById('kiosk-server-ip').textContent = cleanIp;
-            document.getElementById('monitor-class-heading').textContent = `RUANG UJIAN ${className.toUpperCase()}`;
-            document.getElementById('monitor-server-ip').textContent = cleanIp;
-
-            // Setel href dinamis pada tombol peluncur <a> asli
-            const launchLink = document.getElementById('btn-launch-server');
-            if (launchLink) {
-                launchLink.href = serverUrl;
-            }
-
-            updatePortalLaunchStatus('ready', cleanIp);
-            toggleFrameMode(false);
-
-            document.getElementById('lobby-view').classList.add('hidden');
-            document.getElementById('exam-view').classList.remove('hidden');
-            document.body.classList.add('exam-active');
-
-            showToast(`Memasuki Ruang Ujian ${className} (${cleanIp})...`);
-
-            await requestAppFullscreen();
-
-            setTimeout(() => {
-                state.isExamActive = true;
-            }, 600);
-        }
-
-        function onLaunchServerLinkClick() {
-            const cleanIp = state.serverUrl.replace('http://', '');
-            // Beri jeda toleransi singkat agar klik tombol peluncur resmi tidak langsung dianggap pelanggaran
-            state.isExamActive = false;
-            updatePortalLaunchStatus('launched', cleanIp);
-            showToast(`Membuka Portal Ujian ${state.selectedClass} (${cleanIp}) di jendela baru...`);
-
-            setTimeout(() => {
-                if (!document.getElementById('exam-view').classList.contains('hidden')) {
-                    state.isExamActive = true;
-                }
-            }, 1200);
-        }
-
-        function openDirectInCurrentTab() {
-            if (!state.serverUrl) return;
-            const cleanIp = state.serverUrl.replace('http://', '');
-            state.isExamActive = false;
-            updatePortalLaunchStatus('direct', cleanIp);
-            showToast(`Mengalihkan langsung ke server ${cleanIp}...`);
-
-            setTimeout(() => {
-                window.location.assign(state.serverUrl);
-            }, 250);
-        }
-
-        function copyServerIpAddress() {
-            if (!state.serverUrl) return;
-            const textToCopy = state.serverUrl;
-            const tempInput = document.createElement('input');
-            tempInput.value = textToCopy;
-            tempInput.style.position = 'fixed';
-            tempInput.style.opacity = '0';
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            tempInput.setSelectionRange(0, 99999);
-
-            try {
-                document.execCommand('copy');
-                showToast(`Alamat server berhasil disalin: ${textToCopy}`);
-            } catch (err) {
-                showToast(`Alamat server: ${textToCopy}`);
-            }
-
-            document.body.removeChild(tempInput);
-        }
-
-        function updatePortalLaunchStatus(mode, cleanIp) {
-            const dot = document.getElementById('status-dot');
-            const title = document.getElementById('status-title');
-            const desc = document.getElementById('status-desc');
-            if (!dot || !title || !desc) return;
-
-            if (mode === 'launched') {
-                dot.className = 'w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0 animate-pulse';
-                title.textContent = `Portal ujian ${cleanIp} dibuka di tab/jendela baru.`;
-                desc.innerHTML = `Jika tab baru tidak muncul di mode aplikasi penuh (PWA), gunakan tombol <strong>Buka di Tab Ini (Direct)</strong> di atas.`;
-            } else if (mode === 'direct') {
-                dot.className = 'w-2 h-2 rounded-full bg-blue-400 mt-1.5 shrink-0 animate-ping';
-                title.textContent = `Menghubungkan langsung ke ${cleanIp}...`;
-                desc.textContent = `Pastikan perangkat Anda terhubung ke jaringan internet/Wi-Fi sekolah yang aktif.`;
-            } else {
-                dot.className = 'w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0';
-                title.textContent = `Siap menghubungkan ke server ${cleanIp || ''}...`;
-                desc.innerHTML = `Klik <strong>BUKA PORTAL UJIAN SEKARANG</strong> untuk membuka di tab baru, atau pilih <strong>Buka di Tab Ini (Direct)</strong> jika menggunakan mode aplikasi PWA di tablet.`;
-            }
-        }
-
         function toggleFrameMode(enable) {
             state.isFrameMode = enable;
             const monitorPanel = document.getElementById('session-monitor-panel');
             const frameWrapper = document.getElementById('local-frame-wrapper');
             const iframe = document.getElementById('exam-iframe');
 
+            // Gunakan jalur proxy HTTPS jika diakses via domain HTTPS (Vercel), atau IP langsung jika via HTTP lokal
+            const targetFrameSrc = (window.location.protocol === 'https:' && state.proxyPath)
+                ? state.proxyPath
+                : state.serverUrl;
+
             if (enable) {
                 monitorPanel.classList.add('hidden');
                 frameWrapper.classList.remove('hidden');
-                iframe.src = state.serverUrl;
-                showToast('Beralih ke Mode Frame (Lokal)...');
+                iframe.src = targetFrameSrc;
+                showToast('Memuat server ujian di dalam bingkai ExamBrowser...');
             } else {
                 frameWrapper.classList.add('hidden');
                 monitorPanel.classList.remove('hidden');
@@ -1041,250 +784,12 @@
 
         function reloadExamFrame() {
             const iframe = document.getElementById('exam-iframe');
-            if (iframe && state.serverUrl) {
-                iframe.src = state.serverUrl;
-                showToast('Memuat ulang frame server ujian...');
+            const targetFrameSrc = (window.location.protocol === 'https:' && state.proxyPath)
+                ? state.proxyPath
+                : state.serverUrl;
+            if (iframe && targetFrameSrc) {
+                iframe.src = targetFrameSrc;
+                showToast('Memuat ulang halaman server ujian...');
             }
         }
-
-        /**
-         * 4. PEMANTAUAN KEAMANAN LAYAR PENUH & DETEKSI PELANGGARAN
-         */
-        async function requestAppFullscreen() {
-            const elem = document.documentElement;
-            try {
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    if (elem.requestFullscreen) {
-                        await elem.requestFullscreen();
-                    } else if (elem.webkitRequestFullscreen) {
-                        await elem.webkitRequestFullscreen();
-                    }
-                }
-            } catch (err) {}
-        }
-
-        function exitAppFullscreen() {
-            try {
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    }
-                }
-            } catch (err) {}
-        }
-
-        document.addEventListener('visibilitychange', () => {
-            if (state.isExamActive && document.hidden) {
-                triggerViolation('Berpindah Tab atau Meminimalkan Layar');
-            }
-        });
-
-        window.addEventListener('blur', () => {
-            if (state.isExamActive && !state.isFrameMode) {
-                triggerViolation('Membuka Jendela / Aplikasi Lain');
-            }
-        });
-
-        document.addEventListener('fullscreenchange', () => {
-            if (state.isExamActive && !document.fullscreenElement) {
-                triggerViolation('Keluar dari Mode Layar Penuh (Fullscreen)');
-            }
-        });
-
-        document.addEventListener('webkitfullscreenchange', () => {
-            if (state.isExamActive && !document.webkitFullscreenElement) {
-                triggerViolation('Keluar dari Mode Layar Penuh (Fullscreen)');
-            }
-        });
-
-        document.addEventListener('contextmenu', (e) => {
-            if (state.isExamActive) {
-                e.preventDefault();
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (!state.isExamActive) return;
-            const forbiddenKeys = ['F12', 'F11'];
-            if (
-                forbiddenKeys.includes(e.key) ||
-                (e.ctrlKey && ['t', 'n', 'w', 'r', 'u', 'p', 's'].includes(e.key.toLowerCase())) ||
-                (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(e.key.toLowerCase()))
-            ) {
-                e.preventDefault();
-                triggerViolation(`Menekan Pintasan Keyboard Terlarang (${e.key.toUpperCase()})`);
-            }
-        });
-
-        function triggerViolation(reason) {
-            if (!document.getElementById('violation-overlay').classList.contains('hidden')) {
-                return;
-            }
-
-            state.isPreviewMode = false;
-            state.violationCount += 1;
-
-            const now = new Date();
-            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
-
-            state.violationLogs.unshift(`[#${state.violationCount}] ${timeStr} — ${reason}`);
-            updateViolationUI();
-
-            document.getElementById('popup-preview-badge').classList.add('hidden');
-            document.getElementById('violation-reason-text').textContent = reason;
-            document.getElementById('violation-timestamp-text').textContent = timeStr;
-            document.getElementById('violation-modal-count').textContent = state.violationCount;
-
-            renderViolationLogs();
-            document.getElementById('violation-overlay').classList.remove('hidden');
-        }
-
-        function previewViolationPopup() {
-            state.isPreviewMode = true;
-            const now = new Date();
-            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
-
-            document.getElementById('popup-preview-badge').classList.remove('hidden');
-            document.getElementById('violation-reason-text').textContent = 'Simulasi Perpindahan Tab / Aplikasi';
-            document.getElementById('violation-timestamp-text').textContent = timeStr;
-            document.getElementById('violation-modal-count').textContent = '1';
-
-            const logContainer = document.getElementById('violation-log-list');
-            logContainer.innerHTML = `<div>[#1] ${timeStr} — Simulasi Tampilan Peringatan Pelanggaran</div>`;
-
-            document.getElementById('violation-overlay').classList.remove('hidden');
-        }
-
-        function renderViolationLogs() {
-            const logContainer = document.getElementById('violation-log-list');
-            logContainer.innerHTML = state.violationLogs
-                .map(entry => `<div>${entry}</div>`)
-                .join('');
-        }
-
-        function updateViolationUI() {
-            const countEl = document.getElementById('violation-count-display');
-            const badgeEl = document.getElementById('violation-badge');
-            if (!countEl || !badgeEl) return;
-
-            countEl.textContent = state.violationCount;
-            if (state.violationCount > 0) {
-                badgeEl.classList.remove('bg-slate-800', 'text-slate-200', 'border-slate-700');
-                badgeEl.classList.add('bg-rose-600', 'text-white', 'border-rose-400');
-            } else {
-                badgeEl.classList.add('bg-slate-800', 'text-slate-200', 'border-slate-700');
-                badgeEl.classList.remove('bg-rose-600', 'text-white', 'border-rose-400');
-            }
-        }
-
-        async function resumeFullscreenAndDismissPopup() {
-            document.getElementById('violation-overlay').classList.add('hidden');
-            if (!state.isPreviewMode && state.isExamActive) {
-                await requestAppFullscreen();
-            }
-            state.isPreviewMode = false;
-        }
-
-        /**
-         * 5. MODAL PIN PENGAWAS & KELUAR UJIAN
-         */
-        let pinActionMode = 'exit';
-
-        function openExitPinModal() {
-            pinActionMode = 'exit';
-            document.getElementById('modal-pin-title').textContent = 'Verifikasi PIN Pengawas';
-            document.getElementById('modal-pin-desc').textContent = 'Masukkan PIN Pengawas untuk mengakhiri sesi ujian';
-            document.getElementById('supervisor-pin-input').value = '';
-            document.getElementById('pin-error-msg').classList.add('hidden');
-            toggleModal('modal-pin', true);
-            setTimeout(() => document.getElementById('supervisor-pin-input').focus(), 100);
-        }
-
-        function openSupervisorResetFromPopup() {
-            if (state.isPreviewMode) {
-                document.getElementById('violation-overlay').classList.add('hidden');
-                state.isPreviewMode = false;
-                return;
-            }
-            pinActionMode = 'reset_violation';
-            document.getElementById('modal-pin-title').textContent = 'Otorisasi Pengawas Ruang';
-            document.getElementById('modal-pin-desc').textContent = 'Masukkan PIN Pengawas untuk membuka kunci peringatan';
-            document.getElementById('supervisor-pin-input').value = '';
-            document.getElementById('pin-error-msg').classList.add('hidden');
-            toggleModal('modal-pin', true);
-            setTimeout(() => document.getElementById('supervisor-pin-input').focus(), 100);
-        }
-
-        function closePinModal() {
-            toggleModal('modal-pin', false);
-            document.getElementById('supervisor-pin-input').value = '';
-            document.getElementById('pin-error-msg').classList.add('hidden');
-        }
-
-        async function verifySupervisorPin() {
-            const inputPin = document.getElementById('supervisor-pin-input').value.trim();
-            if (inputPin !== CONFIG.SUPERVISOR_PIN) {
-                document.getElementById('pin-error-msg').classList.remove('hidden');
-                document.getElementById('supervisor-pin-input').value = '';
-                document.getElementById('supervisor-pin-input').focus();
-                return;
-            }
-
-            closePinModal();
-
-            if (pinActionMode === 'reset_violation') {
-                document.getElementById('violation-overlay').classList.add('hidden');
-                await requestAppFullscreen();
-                showToast('Kunci peringatan dibuka oleh Pengawas Ruang.');
-                return;
-            }
-
-            // Akhiri sesi ujian & kembali ke menu utama
-            state.isExamActive = false;
-            state.isFrameMode = false;
-            document.body.classList.remove('exam-active');
-            exitAppFullscreen();
-
-            document.getElementById('violation-overlay').classList.add('hidden');
-            document.getElementById('exam-view').classList.add('hidden');
-            document.getElementById('exam-iframe').src = 'about:blank';
-            document.getElementById('lobby-view').classList.remove('hidden');
-
-            showToast('Sesi ujian telah diakhiri oleh Pengawas.');
-        }
-
-        /**
-         * 6. UTILITAS MODAL & TOAST MESSAGE
-         */
-        function toggleModal(modalId, show) {
-            const modalEl = document.getElementById(modalId);
-            if (!modalEl) return;
-            if (show) {
-                modalEl.classList.remove('hidden');
-            } else {
-                modalEl.classList.add('hidden');
-            }
-        }
-
-        let toastTimeoutId = null;
-        function showToast(message) {
-            const toastBox = document.getElementById('toast-box');
-            const toastMsg = document.getElementById('toast-message');
-            if (!toastBox || !toastMsg) return;
-
-            toastMsg.textContent = message;
-            toastBox.classList.remove('hidden');
-
-            if (toastTimeoutId) {
-                clearTimeout(toastTimeoutId);
-            }
-
-            toastTimeoutId = setTimeout(() => {
-                toastBox.classList.add('hidden');
-            }, 3500);
-        }
-    </script>
-</body>
-</html>
+// ... existing code ... -->
