@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ExamBrowser SMAN 54">
+    <title>ExamBrowser ASAS Ganjil 2026/2027 - SMAN 54 JAKARTA</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Inter Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS Murni (Animasi & Kiosk Lock) -->
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body.exam-active {
+            user-select: none;
+            -webkit-user-select: none;
+            overscroll-behavior: none;
+            overflow: hidden;
+        }
+
+        @keyframes flashRed {
+            0%, 100% { background-color: #991b1b; }
+            50% { background-color: #dc2626; }
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.94) translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes motivationBlink {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.45;
+                transform: scale(0.995);
+            }
+        }
+
+        .animate-flash-red {
+            animation: flashRed 0.85s infinite;
+        }
+
+        .animate-pop-in {
+            animation: popIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-motivation-blink {
+            animation: motivationBlink 1.8s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-[100dvh] flex flex-col">
+
+    <!-- =====================================================================
+         1. HALAMAN MENU UTAMA / LOBBY ASESMEN (FIT-TO-SCREEN 100dvh)
+         ===================================================================== -->
+    <div id="lobby-view" class="min-h-[100dvh] lg:h-[100dvh] flex flex-col justify-between overflow-x-hidden lg:overflow-y-auto">
+        
+        <!-- Header 4 Baris Jelas & Proporsional + Waktu Real-Time -->
+        <header class="shrink-0 bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 text-white shadow-md border-b border-blue-800/60">
+            <div class="max-w-6xl mx-auto px-4 py-2.5 sm:px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-2.5">
+                
+                <!-- Kiri: Identitas 4 Baris SMAN 54 Jakarta -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600/30 border border-blue-400/30 p-2 rounded-xl shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+                        </svg>
+                    </div>
+                    <div class="leading-tight">
+                        <h1 class="text-sm sm:text-base md:text-[17px] font-black tracking-wide uppercase text-white">
+                            ASESMEN SUMATIF AKHIR SEMESTER
+                        </h1>
+                        <p class="text-[11px] sm:text-xs font-semibold text-amber-300">
+                            7 November - 4 Desember 2026
+                        </p>
+                        <p class="text-xs sm:text-sm font-extrabold tracking-wide text-blue-200">
+                            SMAN 54 JAKARTA
+                        </p>
+                        <p class="text-[10px] sm:text-[11px] font-medium text-slate-300">
+                            Tahun Pelajaran 2026/2027
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kanan: Waktu Real-Time WIB & Tombol Instalasi -->
+                <div class="w-full md:w-auto flex flex-wrap md:flex-col items-center md:items-end justify-between gap-1.5 border-t md:border-t-0 border-slate-800 pt-2 md:pt-0">
+                    <!-- Penunjuk Hari, Tanggal & Waktu Real-Time -->
+                    <div class="bg-slate-900/90 border border-slate-700/80 rounded-lg px-2.5 py-1 flex items-center gap-2 text-[11px] sm:text-xs font-mono text-emerald-300 shadow-inner">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                        <span id="portal-live-clock">Memuat waktu...</span>
+                    </div>
+
+                    <!-- Tombol Panduan Instalasi & PWA Install -->
+                    <div class="flex items-center gap-2">
+                        <button id="btn-install-pwa" onclick="triggerPWAInstall()" class="hidden items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg shadow transition cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                            </svg>
+                            <span>Instal Aplikasi</span>
+                        </button>
+                        <button onclick="toggleModal('modal-install-guide', true)" class="flex items-center gap-1.5 bg-blue-800/70 hover:bg-blue-700/80 text-blue-100 border border-blue-500/40 font-semibold text-[11px] px-2.5 py-1 rounded-lg transition cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25"/>
+                            </svg>
+                            <span>Panduan Instalasi</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Konten Utama Lobby (Padat, Simetris, & Fit-to-Screen) -->
+        <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-3 sm:px-6 sm:py-3.5 flex flex-col justify-center gap-3">
+
+            <!-- 1. Pilihan 3 Server Ujian Berdasarkan Jenjang Kelas -->
+            <section class="space-y-2">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5">
+                    <h2 class="text-sm sm:text-base font-extrabold text-slate-900">
+                        Pilih Server Ujian Sesuai Jenjang Kelas
+                    </h2>
+                    <span class="text-[11px] sm:text-xs font-medium text-slate-500">
+                        Klik kartu kelas untuk masuk ke mode layar penuh terpantau
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <!-- Kartu Kelas X -->
+                    <button onclick="startExam('Kelas X', 'http://103.31.134.180')" class="group text-left bg-white hover:bg-blue-50/40 rounded-2xl p-3.5 sm:p-4 border-2 border-slate-200 hover:border-blue-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-100 text-blue-800">
+                                    SERVER 1
+                                </span>
+                                <span class="text-[11px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                                    103.31.134.180
+                                </span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-black text-slate-900 group-hover:text-blue-700 transition leading-tight">
+                                KELAS X
+                            </h3>
+                            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">
+                                Portal Asesmen Sumatif Akhir Semester Peserta Didik Kelas X
+                            </p>
+                        </div>
+                        <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-blue-700 font-bold text-xs">
+                            <span>Masuk Ruang Ujian Kelas X</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- Kartu Kelas XI -->
+                    <button onclick="startExam('Kelas XI', 'http://103.31.134.181')" class="group text-left bg-white hover:bg-indigo-50/40 rounded-2xl p-3.5 sm:p-4 border-2 border-slate-200 hover:border-indigo-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-indigo-100 text-indigo-800">
+                                    SERVER 2
+                                </span>
+                                <span class="text-[11px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                                    103.31.134.181
+                                </span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-black text-slate-900 group-hover:text-indigo-700 transition leading-tight">
+                                KELAS XI
+                            </h3>
+                            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">
+                                Portal Asesmen Sumatif Akhir Semester Peserta Didik Kelas XI
+                            </p>
+                        </div>
+                        <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-indigo-700 font-bold text-xs">
+                            <span>Masuk Ruang Ujian Kelas XI</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- Kartu Kelas XII -->
+                    <button onclick="startExam('Kelas XII', 'http://103.31.134.182')" class="group text-left bg-white hover:bg-emerald-50/40 rounded-2xl p-3.5 sm:p-4 border-2 border-slate-200 hover:border-emerald-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800">
+                                    SERVER 3
+                                </span>
+                                <span class="text-[11px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                                    103.31.134.182
+                                </span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-black text-slate-900 group-hover:text-emerald-700 transition leading-tight">
+                                KELAS XII
+                            </h3>
+                            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">
+                                Portal Asesmen Sumatif Akhir Semester Peserta Didik Kelas XII
+                            </p>
+                        </div>
+                        <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-emerald-700 font-bold text-xs">
+                            <span>Masuk Ruang Ujian Kelas XII</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                            </svg>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 2. Grid 2 Kolom Padat: Persiapan Pelaksanaan & Informasi Akun Login -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Panel 1: Perlengkapan Wajib Peserta -->
+                <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200 shadow-sm flex flex-col justify-between space-y-2">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-amber-100 text-amber-700 p-1.5 rounded-lg shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-xs sm:text-sm">
+                            Persiapan Pelaksanaan ASAS
+                        </h3>
+                    </div>
+                    <ul class="space-y-1.5 text-[11px] sm:text-xs text-slate-700">
+                        <li class="flex items-start gap-2">
+                            <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">1</span>
+                            <span>Membawa perangkat <strong>Laptop / Tab</strong> dalam kondisi baterai penuh.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">2</span>
+                            <span>Menyiapkan <strong>Paket data / kuota internet</strong> pribadi yang stabil.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">3</span>
+                            <span>Bagi yang memiliki <strong>Kabel Roll</strong> mohon dibawa untuk cadangan daya di kelas.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Panel 2: Ketentuan Akun & Ubah Password -->
+                <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200 shadow-sm flex flex-col justify-between space-y-2">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-blue-100 text-blue-700 p-1.5 rounded-lg shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-xs sm:text-sm">
+                            Informasi Akun Login & Password
+                        </h3>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl px-3 py-2 border border-slate-200 grid grid-cols-2 gap-2 text-[11px] sm:text-xs">
+                        <div>
+                            <span class="text-slate-500 block text-[10px]">Username:</span>
+                            <span class="font-mono font-bold text-slate-900">NIS (5 digit)</span>
+                        </div>
+                        <div class="border-l border-slate-200 pl-2.5">
+                            <span class="text-slate-500 block text-[10px]">Password Awal:</span>
+                            <span class="font-mono font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 inline-block">12345</span>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-snug bg-amber-50 border border-amber-200/80 rounded-xl px-3 py-2">
+                        <strong>Wajib Ubah Password:</strong> Setelah login pertama kali akan muncul menu <em>Ubah Password</em>. Ganti dengan password baru yang mudah diingat untuk digunakan selama ASAS Ganjil TP 2026/2027.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 3. Banner Sistem Keamanan & Kalimat Motivasi Berkedip -->
+            <section class="space-y-2">
+                <!-- Banner Pengawasan & Tombol Uji Pop-Up Peringatan -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 px-4 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-rose-100 text-rose-700 p-2 rounded-xl shrink-0 mt-0.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-slate-900 text-xs sm:text-sm">
+                                Sistem Keamanan Layar & Pop-Up Peringatan Otomatis
+                            </h2>
+                            <p class="text-[11px] sm:text-xs text-slate-600 mt-0.5 leading-snug">
+                                Selama ujian berlangsung, membuka tab baru, meminimalkan jendela, split-screen, atau keluar dari mode layar penuh akan memicu <strong>Pop-Up Peringatan merah yang mengunci layar</strong> dan mencatat riwayat pelanggaran.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="shrink-0 w-full md:w-auto">
+                        <button onclick="previewViolationPopup()" class="w-full md:w-auto flex items-center justify-center gap-1.5 bg-rose-600 hover:bg-rose-700 active:scale-[0.99] text-white font-bold text-[11px] sm:text-xs px-3.5 py-2 rounded-xl shadow-sm transition cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                            </svg>
+                            <span>Uji Pop-Up Peringatan</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Banner Kalimat Motivasi dengan Efek Berkedip -->
+                <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 rounded-2xl shadow-sm border border-blue-700/70 px-4 py-2.5 text-center">
+                    <p class="animate-motivation-blink text-xs sm:text-sm font-extrabold tracking-wide text-amber-300 flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4 text-amber-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <span>Percayalah Pada Kemampuan Diri Sendiri, Semoga Lancar &amp; Meraih Hasil Terbaik</span>
+                        <svg class="w-4 h-4 text-amber-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer Permanen yang Selalu Terlihat Jelas (shrink-0) -->
+        <footer class="shrink-0 bg-slate-900 text-slate-200 border-t border-slate-800 py-2.5 px-4 sm:px-6">
+            <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1 text-center sm:text-left text-[11px] sm:text-xs">
+                <p class="font-medium text-slate-200">
+                    © 2026 Panitia Asesmen Sumatif Akhir Semester Ganjil TP 2026/2027
+                </p>
+                <p class="font-bold text-blue-300">
+                    Dikembangkan Oleh : Wise Counselor
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         2. HALAMAN MODE UJIAN TERPANTAU (FIT-TO-SCREEN 100dvh + HEADER & FOOTER)
+         ===================================================================== -->
+    <div id="exam-view" class="hidden fixed inset-0 z-40 h-[100dvh] bg-slate-950 flex flex-col justify-between">
+        
+        <!-- Header Khusus Ujian (shrink-0) -->
+        <header class="shrink-0 bg-slate-900 text-white px-3 sm:px-6 py-2.5 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2 select-none">
+            
+            <!-- Kiri: Identitas Sekolah & Jenjang Server -->
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-extrabold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span id="kiosk-class-label">KELAS X</span>
+                </span>
+                <span id="kiosk-server-ip" class="font-mono text-xs text-amber-300 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
+                    103.31.134.180
+                </span>
+                <div class="hidden md:block leading-tight border-l border-slate-700 pl-2.5">
+                    <span class="text-[11px] font-black text-white block">ASESMEN SUMATIF AKHIR SEMESTER</span>
+                    <span class="text-[10px] font-semibold text-blue-300 block">SMAN 54 JAKARTA &bull; TP 2026/2027</span>
+                </div>
+            </div>
+
+            <!-- Tengah: Hari, Tanggal & Waktu Real-Time -->
+            <div class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-emerald-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="kiosk-live-clock">--:--:-- WIB</span>
+            </div>
+
+            <!-- Kanan: Penghitung Pelanggaran & Tombol Keluar Ujian -->
+            <div class="flex items-center gap-2">
+                <div id="violation-badge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 text-slate-200 border border-slate-700 text-xs font-bold">
+                    <span>Pelanggaran:</span>
+                    <span id="violation-count-display" class="font-mono text-sm font-black">0</span>
+                </div>
+
+                <button onclick="openExitPinModal()" class="bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+                    </svg>
+                    <span>Keluar Ujian</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Area Utama Ruang Ujian Terpantau (flex-1 agar Header & Footer selalu utuh) -->
+        <main class="relative flex-1 min-h-0 w-full bg-slate-950 overflow-y-auto flex flex-col">
+            
+            <!-- Mode Default: Kartu Session Monitor + Akses Langsung Server Ujian -->
+            <div id="session-monitor-panel" class="flex-1 flex items-center justify-center p-4 sm:p-6">
+                <div class="max-w-xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5">
+                    
+                    <!-- Header Kartu Ruang Ujian -->
+                    <div class="flex items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-600/20 text-blue-400 border border-blue-500/30 p-2.5 rounded-2xl shrink-0">
+                                <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                    Ruang Ujian Terpantau
+                                </span>
+                                <h2 id="monitor-class-heading" class="text-base sm:text-xl font-black text-white mt-0.5">
+                                    RUANG UJIAN KELAS X
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[11px] text-slate-400 block">Alamat Server</span>
+                            <span id="monitor-server-ip" class="font-mono text-xs font-bold text-amber-400 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700 inline-block mt-0.5">
+                                103.31.134.180
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Penjelasan & Tombol Utama Buka Portal Ujian -->
+                    <div class="space-y-3.5">
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Tekan tombol di bawah untuk membuka halaman login server ujian secara langsung tanpa terhalang layar putih (<em>Mixed Content HTTP/HTTPS</em>). Biarkan jendela <strong>ExamBrowser</strong> ini tetap aktif sebagai pengawas sesi hingga ujian selesai.
+                        </p>
+
+                        <button onclick="openExamPortalDirect()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base py-3.5 px-5 rounded-2xl shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2.5 transition cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+                            </svg>
+                            <span>BUKA PORTAL UJIAN SEKARANG</span>
+                        </button>
+
+                        <!-- Kartu Status Koneksi Server -->
+                        <div id="portal-launch-status" class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 text-xs text-slate-300 flex items-start gap-2.5">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0"></span>
+                            <div>
+                                <p class="font-semibold text-slate-200">Siap menghubungkan ke server ujian...</p>
+                                <p class="text-slate-400 mt-0.5">Jika browser memblokir jendela baru, klik ikon <strong>Pop-up diblokir</strong> di bilah alamat browser lalu pilih <em>Selalu izinkan (Always allow)</em>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Kartu & Opsi Cadangan Frame Lokal -->
+                    <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-400">
+                        <div>
+                            Login: <strong class="text-slate-200">NIS (5 digit)</strong> &bull; Password awal: <strong class="text-slate-200">12345</strong>
+                        </div>
+                        <button onclick="toggleFrameMode(true)" class="text-blue-400 hover:text-blue-300 underline font-semibold cursor-pointer">
+                            Mode Frame (Lokal)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode Cadangan: Iframe Lokal (Khusus Jaringan Lokal HTTP) -->
+            <div id="local-frame-wrapper" class="hidden w-full h-full flex-1 flex flex-col bg-white">
+                <div class="shrink-0 bg-amber-50 border-b border-amber-200 px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-amber-900">
+                    <span>
+                        <strong>Mode Frame (Lokal):</strong> Jika layar di bawah tampak putih karena kebijakan HTTPS ke HTTP, gunakan tombol di kanan untuk kembali ke Session Monitor.
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <button onclick="reloadExamFrame()" class="bg-amber-200/80 hover:bg-amber-300 text-amber-950 font-bold px-2.5 py-1 rounded-lg cursor-pointer">
+                            Muat Ulang
+                        </button>
+                        <button onclick="toggleFrameMode(false)" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-2.5 py-1 rounded-lg cursor-pointer">
+                            Kembali ke Session Monitor
+                        </button>
+                    </div>
+                </div>
+                <iframe 
+                    id="exam-iframe" 
+                    src="about:blank" 
+                    class="w-full flex-1 border-0 block bg-white"
+                    allow="fullscreen"
+                    referrerpolicy="no-referrer"
+                ></iframe>
+            </div>
+        </main>
+
+        <!-- Footer Permanen di Layar Ujian (shrink-0 agar selalu terlihat jelas) -->
+        <footer class="shrink-0 bg-slate-900 text-slate-200 border-t border-slate-800 py-2 px-4 sm:px-6 select-none">
+            <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1 text-center sm:text-left text-[11px] sm:text-xs">
+                <p class="font-medium text-slate-300">
+                    © 2026 Panitia Asesmen Sumatif Akhir Semester Ganjil TP 2026/2027
+                </p>
+                <p class="font-bold text-blue-300">
+                    Dikembangkan Oleh : Wise Counselor
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         3. POP-UP MODAL PERINGATAN PELANGGARAN (TANPA SUARA/ALARM)
+         ===================================================================== -->
+    <div id="violation-overlay" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 select-none">
+        <div role="alertdialog" aria-modal="true" aria-labelledby="popup-violation-title" class="animate-pop-in max-w-lg w-full bg-white rounded-3xl overflow-hidden shadow-[0_0_60px_rgba(220,38,38,0.75)] border-4 border-red-600">
+            
+            <!-- Header Pop-Up Berkedip Merah -->
+            <div class="animate-flash-red text-white px-6 py-4 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white text-red-700 p-2 rounded-xl shadow shrink-0">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="inline-block px-2 py-0.5 bg-white/20 text-white font-extrabold text-[10px] tracking-widest uppercase rounded">
+                            PERINGATAN KEAMANAN UJIAN
+                        </span>
+                        <h2 id="popup-violation-title" class="text-lg sm:text-xl font-black tracking-tight uppercase leading-tight">
+                            PELANGGARAN TERDETEKSI!
+                        </h2>
+                    </div>
+                </div>
+                <span id="popup-preview-badge" class="hidden px-2.5 py-1 bg-amber-300 text-slate-900 font-extrabold text-[10px] rounded-lg uppercase">
+                    Simulasi
+                </span>
+            </div>
+
+            <!-- Isi Pop-Up Peringatan -->
+            <div class="p-5 sm:p-6 space-y-4 text-slate-800">
+                <div class="bg-red-50 border-l-4 border-red-600 p-3.5 rounded-r-xl">
+                    <p class="text-xs sm:text-sm font-bold text-red-900">
+                        Sistem mendeteksi Anda berpindah tab, membuka aplikasi lain, atau keluar dari layar penuh ujian!
+                    </p>
+                    <p class="text-xs text-red-700 mt-1">
+                        Aktivitas ini otomatis tercatat pada log pengawasan <strong>SMAN 54 JAKARTA</strong> untuk dilaporkan kepada Pengawas Ruang.
+                    </p>
+                </div>
+
+                <!-- Rincian Pelanggaran -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2.5 text-xs sm:text-sm">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-2 gap-2">
+                        <span class="text-slate-500 font-medium shrink-0">Jenis Pelanggaran:</span>
+                        <span id="violation-reason-text" class="font-extrabold text-red-700 text-right">Membuka Tab / Aplikasi Lain</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-2 gap-2">
+                        <span class="text-slate-500 font-medium shrink-0">Waktu Kejadian:</span>
+                        <span id="violation-timestamp-text" class="font-mono font-bold text-slate-800">--:--:-- WIB</span>
+                    </div>
+                    <div class="flex justify-between items-center gap-2">
+                        <span class="text-slate-500 font-medium shrink-0">Total Pelanggaran:</span>
+                        <span id="violation-modal-count" class="font-mono font-black text-base px-2.5 py-0.5 bg-red-600 text-white rounded-lg">1</span>
+                    </div>
+                </div>
+
+                <!-- Log Riwayat Pelanggaran -->
+                <div>
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Log Pelanggaran Tercatat:</p>
+                    <div id="violation-log-list" class="max-h-24 overflow-y-auto bg-slate-900 text-rose-300 rounded-xl p-3 text-[11px] font-mono space-y-1">
+                    </div>
+                </div>
+
+                <!-- Tombol Aksi Pop-Up -->
+                <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+                    <button id="btn-dismiss-violation" onclick="resumeFullscreenAndDismissPopup()" class="flex-1 bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-extrabold py-3 px-4 rounded-xl shadow-md text-xs sm:text-sm uppercase tracking-wide transition cursor-pointer">
+                        Kembali ke Layar Penuh Ujian
+                    </button>
+                    <button id="btn-supervisor-from-popup" onclick="openSupervisorResetFromPopup()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-4 rounded-xl text-xs transition cursor-pointer">
+                        PIN Pengawas
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         4. MODAL VERIFIKASI PIN PENGAWAS (TANPA PETUNJUK / PLACEHOLDER PIN)
+         ===================================================================== -->
+    <div id="modal-pin" class="hidden fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 id="modal-pin-title" class="font-extrabold text-lg text-slate-900">Verifikasi PIN Pengawas</h3>
+                <button onclick="closePinModal()" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <p id="modal-pin-desc" class="text-xs sm:text-sm text-slate-600">
+                Masukkan PIN Pengawas untuk mengakhiri sesi ujian
+            </p>
+
+            <div>
+                <input 
+                    type="password" 
+                    id="supervisor-pin-input" 
+                    inputmode="numeric"
+                    maxlength="8"
+                    autocomplete="off"
+                    class="w-full text-center font-mono text-2xl tracking-[0.5em] font-bold border-2 border-slate-300 focus:border-blue-600 focus:outline-none rounded-xl py-3 px-4 text-slate-900"
+                    onkeydown="if(event.key === 'Enter') verifySupervisorPin()"
+                >
+                <p id="pin-error-msg" class="hidden text-xs font-bold text-rose-600 mt-2 text-center">
+                    PIN Pengawas tidak valid! Silakan hubungi pengawas ruang.
+                </p>
+            </div>
+
+            <div class="flex gap-2 pt-1">
+                <button onclick="closePinModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer">
+                    Batal
+                </button>
+                <button onclick="verifySupervisorPin()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition cursor-pointer">
+                    Konfirmasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         5. MODAL PANDUAN INSTALASI LAPTOP / TABLET
+         ===================================================================== -->
+    <div id="modal-install-guide" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-lg text-slate-900">Panduan Instalasi ExamBrowser</h3>
+                <button onclick="toggleModal('modal-install-guide', false)" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-3.5 text-xs sm:text-sm text-slate-700">
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-1.5">
+                    <h4 class="font-bold text-blue-900">
+                        1. Cara Instal di Laptop (Google Chrome / Microsoft Edge)
+                    </h4>
+                    <ol class="list-decimal list-inside space-y-1 text-blue-800">
+                        <li>Buka tautan ExamBrowser menggunakan browser <strong>Chrome</strong> atau <strong>Edge</strong>.</li>
+                        <li>Klik tombol <strong>"Instal Aplikasi"</strong> di header kanan atas, atau klik ikon <strong>Install</strong> di ujung kanan bilah alamat URL.</li>
+                        <li>Konfirmasi <strong>Install</strong> agar pintasan ExamBrowser terpasang di Desktop / Start Menu Laptop.</li>
+                    </ol>
+                </div>
+
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 space-y-1.5">
+                    <h4 class="font-bold text-emerald-900">
+                        2. Cara Instal di Tablet Android / iPad
+                    </h4>
+                    <ol class="list-decimal list-inside space-y-1 text-emerald-800">
+                        <li><strong>Tablet Android (Chrome):</strong> Ketuk ikon menu titik tiga (<strong>⋮</strong>) di pojok kanan atas &rarr; pilih <strong>Instal Aplikasi</strong> atau <strong>Tambahkan ke Layar Utama</strong>.</li>
+                        <li><strong>iPad (Safari):</strong> Ketuk ikon <strong>Bagikan (Share)</strong> &rarr; pilih <strong>Tambahkan ke Layar Utama (Add to Home Screen)</strong>.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <button onclick="toggleModal('modal-install-guide', false)" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition cursor-pointer">
+                Tutup Panduan
+            </button>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         6. TOAST NOTIFIKASI (PENGGANTI ALERT)
+         ===================================================================== -->
+    <div id="toast-box" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[70] bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-2.5 max-w-md w-[90%]">
+        <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+        <span id="toast-message">Pesan notifikasi</span>
+    </div>
+
+    <!-- =====================================================================
+         7. LOGIKA JAVASCRIPT UTAMA (TANPA AUDIO/ALARM)
+         ===================================================================== -->
+    <script>
+        /**
+         * KONFIGURASI KEAMANAN EXAM BROWSER
+         */
+        const CONFIG = {
+            SUPERVISOR_PIN: '2026'
+        };
+
+        /**
+         * STATE APLIKASI
+         */
+        let state = {
+            isExamActive: false,
+            isPreviewMode: false,
+            isFrameMode: false,
+            selectedClass: '',
+            serverUrl: '',
+            violationCount: 0,
+            violationLogs: [],
+            portalWindowRef: null,
+            deferredInstallPrompt: null
+        };
+
+        /**
+         * 1. JAM & TANGGAL REAL-TIME (WIB)
+         */
+        function updateLiveDateTime() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+
+            const dayName = days[now.getDay()];
+            const dateNum = String(now.getDate()).padStart(2, '0');
+            const monthName = months[now.getMonth()];
+            const yearNum = now.getFullYear();
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const fullText = `${dayName}, ${dateNum} ${monthName} ${yearNum} • ${hours}:${minutes}:${seconds} WIB`;
+            const compactText = `${dayName}, ${dateNum} ${monthName.slice(0, 3)} ${yearNum} • ${hours}:${minutes}:${seconds}`;
+
+            const portalClockEl = document.getElementById('portal-live-clock');
+            if (portalClockEl) {
+                portalClockEl.textContent = fullText;
+            }
+
+            const kioskClockEl = document.getElementById('kiosk-live-clock');
+            if (kioskClockEl) {
+                kioskClockEl.textContent = window.innerWidth < 640 ? compactText : fullText;
+            }
+        }
+
+        updateLiveDateTime();
+        setInterval(updateLiveDateTime, 1000);
+
+        /**
+         * 2. INISIALISASI PWA MANIFEST & SERVICE WORKER DINAMIS
+         */
+        (function setupPWA() {
+            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0f172a"/><path d="M256 72L112 136v112c0 98.4 61.4 189.8 144 216 82.6-26.2 144-117.6 144-216V136L256 72zm-24 276l-68-68 28.3-28.3L232 291.4l87.7-87.7L348 232 232 348z" fill="#3b82f6"/></svg>`;
+            const iconUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgIcon);
+
+            const manifest = {
+                name: 'ExamBrowser ASAS - SMAN 54 JAKARTA',
+                short_name: 'ExamBrowser',
+                description: 'Aplikasi ExamBrowser ASAS Ganjil TP 2026/2027 SMAN 54 Jakarta',
+                start_url: window.location.href,
+                display: 'standalone',
+                orientation: 'any',
+                background_color: '#0f172a',
+                theme_color: '#0f172a',
+                icons: [
+                    { src: iconUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
+                    { src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
+                ]
+            };
+
+            try {
+                const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+                const manifestURL = URL.createObjectURL(blob);
+                const link = document.createElement('link');
+                link.rel = 'manifest';
+                link.href = manifestURL;
+                document.head.appendChild(link);
+            } catch (e) {}
+
+            if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+                const swCode = `
+                    self.addEventListener('install', (e) => self.skipWaiting());
+                    self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+                    self.addEventListener('fetch', (e) => {});
+                `;
+                try {
+                    const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                    const swUrl = URL.createObjectURL(swBlob);
+                    navigator.serviceWorker.register(swUrl).catch(() => {});
+                } catch (err) {}
+            }
+        })();
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            state.deferredInstallPrompt = e;
+            const installBtn = document.getElementById('btn-install-pwa');
+            if (installBtn) {
+                installBtn.classList.remove('hidden');
+                installBtn.classList.add('flex');
+            }
+        });
+
+        async function triggerPWAInstall() {
+            if (!state.deferredInstallPrompt) {
+                toggleModal('modal-install-guide', true);
+                return;
+            }
+            state.deferredInstallPrompt.prompt();
+            const { outcome } = await state.deferredInstallPrompt.userChoice;
+            if (outcome === 'accepted') {
+                showToast('Aplikasi ExamBrowser berhasil diinstal ke perangkat!');
+                document.getElementById('btn-install-pwa').classList.add('hidden');
+            }
+            state.deferredInstallPrompt = null;
+        }
+
+        /**
+         * 3. MASUK KE MODE UJIAN TERPANTAU & BUKA SERVER UJIAN
+         */
+        async function startExam(className, serverUrl) {
+            state.selectedClass = className;
+            state.serverUrl = serverUrl;
+            state.violationCount = 0;
+            state.violationLogs = [];
+            updateViolationUI();
+
+            const cleanIp = serverUrl.replace('http://', '');
+            document.getElementById('kiosk-class-label').textContent = className.toUpperCase();
+            document.getElementById('kiosk-server-ip').textContent = cleanIp;
+            document.getElementById('monitor-class-heading').textContent = `RUANG UJIAN ${className.toUpperCase()}`;
+            document.getElementById('monitor-server-ip').textContent = cleanIp;
+
+            updatePortalLaunchStatus('waiting');
+            toggleFrameMode(false);
+
+            document.getElementById('lobby-view').classList.add('hidden');
+            document.getElementById('exam-view').classList.remove('hidden');
+            document.body.classList.add('exam-active');
+
+            await requestAppFullscreen();
+
+            setTimeout(() => {
+                state.isExamActive = true;
+            }, 600);
+        }
+
+        function openExamPortalDirect() {
+// ... existing code ... -->
+            document.getElementById('violation-overlay').classList.add('hidden');
+            document.getElementById('exam-view').classList.add('hidden');
+            document.getElementById('exam-iframe').src = 'about:blank';
+            document.getElementById('lobby-view').classList.remove('hidden');
+
+            showToast('Sesi ujian telah diakhiri oleh Pengawas.');
+        }
+
+        /**
+         * 6. UTILITAS MODAL & TOAST MESSAGE
+         */
+        function toggleModal(modalId, show) {
+            const el = document.getElementById(modalId);
+            if (!el) return;
+            el.classList.toggle('hidden', !show);
+        }
+
+        let toastTimeout = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast-box');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.textContent = msg;
+            toast.classList.remove('hidden');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
