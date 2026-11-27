@@ -1,0 +1,16 @@
+{
+"rewrites": [
+{
+"source": "/server-x/:path*",
+"destination": "http://103.31.134.180/:path*"
+},
+{
+"source": "/server-xi/:path*",
+"destination": "http://103.31.134.181/:path*"
+},
+{
+"source": "/server-xii/:path*",
+"destination": "http://103.31.134.182/:path*"
+}
+]
+}
