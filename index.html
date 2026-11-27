@@ -154,7 +154,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <!-- Kartu Kelas X (Rona Hijau / Emerald) -->
-                    <a href="http://103.31.134.180" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas X', 'http://103.31.134.180', '/server-x/')" class="group text-left bg-gradient-to-br from-emerald-50/90 via-white to-emerald-100/50 hover:from-emerald-100/80 hover:to-emerald-50 rounded-2xl p-3.5 sm:p-4 border-2 border-emerald-200 hover:border-emerald-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
+                    <a href="http://103.31.134.180" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas X', 'http://103.31.134.180', '/server-x')" class="group text-left bg-gradient-to-br from-emerald-50/90 via-white to-emerald-100/50 hover:from-emerald-100/80 hover:to-emerald-50 rounded-2xl p-3.5 sm:p-4 border-2 border-emerald-200 hover:border-emerald-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-600 text-white shadow-xs">
@@ -180,7 +180,7 @@
                     </a>
 
                     <!-- Kartu Kelas XI (Rona Biru / Blue) -->
-                    <a href="http://103.31.134.181" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas XI', 'http://103.31.134.181', '/server-xi/')" class="group text-left bg-gradient-to-br from-blue-50/90 via-white to-blue-100/50 hover:from-blue-100/80 hover:to-blue-50 rounded-2xl p-3.5 sm:p-4 border-2 border-blue-200 hover:border-blue-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
+                    <a href="http://103.31.134.181" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas XI', 'http://103.31.134.181', '/server-xi')" class="group text-left bg-gradient-to-br from-blue-50/90 via-white to-blue-100/50 hover:from-blue-100/80 hover:to-blue-50 rounded-2xl p-3.5 sm:p-4 border-2 border-blue-200 hover:border-blue-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-600 text-white shadow-xs">
@@ -206,7 +206,7 @@
                     </a>
 
                     <!-- Kartu Kelas XII (Rona Pink / Merah Muda) -->
-                    <a href="http://103.31.134.182" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas XII', 'http://103.31.134.182', '/server-xii/')" class="group text-left bg-gradient-to-br from-pink-50/90 via-white to-pink-100/50 hover:from-pink-100/80 hover:to-pink-50 rounded-2xl p-3.5 sm:p-4 border-2 border-pink-200 hover:border-pink-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
+                    <a href="http://103.31.134.182" target="_blank" rel="noopener noreferrer" onclick="handleServerCardClick(event, 'Kelas XII', 'http://103.31.134.182', '/server-xii')" class="group text-left bg-gradient-to-br from-pink-50/90 via-white to-pink-100/50 hover:from-pink-100/80 hover:to-pink-50 rounded-2xl p-3.5 sm:p-4 border-2 border-pink-200 hover:border-pink-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer no-underline">
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-pink-600 text-white shadow-xs">
@@ -472,7 +472,7 @@
                             Login: <strong class="text-slate-200">NIS (5 digit)</strong> &bull; Password awal: <strong class="text-slate-200">12345</strong>
                         </div>
                         <button type="button" onclick="toggleFrameMode(true)" class="text-blue-400 hover:text-blue-300 underline font-semibold cursor-pointer">
-                            Kembali ke Mode Bingkai (Frame)
+                            Coba Mode Bingkai (Frame)
                         </button>
                     </div>
                 </div>
@@ -931,9 +931,14 @@
 
             updatePortalLaunchStatus('ready', cleanIp);
 
-            // Otomatis buka dalam Mode Bingkai (Frame) menggunakan Proxy HTTPS Vercel jika diakses via HTTPS
+            // Cek ketersediaan rute proxy Vercel sebelum memuat iframe agar tidak muncul 404
             const isHostedHttps = window.location.protocol === 'https:' && !window.location.hostname.includes('googleusercontent');
-            toggleFrameMode(isHostedHttps);
+            if (isHostedHttps && proxyPath) {
+                toggleFrameMode(false);
+                verifyProxyAndLoadFrame(proxyPath, cleanIp);
+            } else {
+                toggleFrameMode(false);
+            }
 
             document.getElementById('lobby-view').classList.add('hidden');
             document.getElementById('exam-view').classList.remove('hidden');
@@ -946,6 +951,23 @@
             setTimeout(() => {
                 state.isExamActive = true;
             }, 600);
+        }
+
+        async function verifyProxyAndLoadFrame(proxyPath, cleanIp) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            try {
+                const res = await fetch(proxyPath, { method: 'GET', signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (res.ok) {
+                    toggleFrameMode(true);
+                } else {
+                    updatePortalLaunchStatus('direct_needed', cleanIp);
+                }
+            } catch (err) {
+                clearTimeout(timeoutId);
+                updatePortalLaunchStatus('direct_needed', cleanIp);
+            }
         }
 
         function onLaunchServerLinkClick() {
@@ -994,10 +1016,14 @@
                 dot.className = 'w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0 animate-pulse';
                 title.textContent = `Tautan portal ujian (${ipAddress}) telah dibuka.`;
                 desc.innerHTML = 'Silakan login menggunakan <strong>NIS (5 digit)</strong> dan password <strong>12345</strong>. Jika tab baru tertahan, klik <strong>Buka di Tab Ini (Direct)</strong>.';
+            } else if (mode === 'direct_needed') {
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0 animate-pulse';
+                title.textContent = `Server ${ipAddress} siap diakses langsung dari perangkat Anda.`;
+                desc.innerHTML = 'Silakan tekan tombol utama <strong>BUKA PORTAL UJIAN SEKARANG</strong> atau <strong>Buka di Tab Ini (Direct)</strong> di atas untuk masuk ke halaman login ujian.';
             } else {
                 dot.className = 'w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0';
-                title.textContent = `Siap menghubungkan ke server ${ipAddress}...`;
-                desc.innerHTML = 'Gunakan tombol hijau di atas untuk membuka halaman login, atau kembali ke <strong>Mode Bingkai (Frame)</strong>.';
+                title.textContent = `Menghubungkan ke server ${ipAddress}...`;
+                desc.innerHTML = 'Gunakan tombol utama di atas untuk membuka halaman login, atau tekan <strong>Buka di Tab Ini (Direct)</strong>.';
             }
         }
 
@@ -1007,15 +1033,11 @@
             const frameWrapper = document.getElementById('local-frame-wrapper');
             const iframe = document.getElementById('exam-iframe');
 
-            const targetFrameSrc = (window.location.protocol === 'https:' && state.proxyPath)
-                ? state.proxyPath
-                : state.serverUrl;
-
             if (enable) {
                 monitorPanel.classList.add('hidden');
                 frameWrapper.classList.remove('hidden');
-                iframe.src = targetFrameSrc;
-                showToast('Memuat server ujian di dalam bingkai ExamBrowser...');
+                iframe.src = state.serverUrl;
+                showToast(`Memuat ${state.serverUrl} dalam bingkai...`);
             } else {
                 frameWrapper.classList.add('hidden');
                 monitorPanel.classList.remove('hidden');
@@ -1025,11 +1047,8 @@
 
         function reloadExamFrame() {
             const iframe = document.getElementById('exam-iframe');
-            const targetFrameSrc = (window.location.protocol === 'https:' && state.proxyPath)
-                ? state.proxyPath
-                : state.serverUrl;
-            if (iframe && targetFrameSrc) {
-                iframe.src = targetFrameSrc;
+            if (iframe && state.serverUrl) {
+                iframe.src = state.serverUrl;
                 showToast('Memuat ulang halaman server ujian...');
             }
         }
@@ -1277,9 +1296,3 @@
     </script>
 </body>
 </html>
-```
-
-### Rincian Perbaikan yang Diterapkan:
-1. **Waktu Real-Time Langsung Muncul (`startLiveClocks()`):** Menambahkan kembali fungsi jam dan tanggal bahasa Indonesia (`Hari, DD Bulan YYYY • HH:MM:SS WIB`) yang langsung berjalan otomatis saat halaman dimuat, baik pada header menu utama (`#portal-live-clock`) maupun bilah atas setiap server (`#kiosk-live-clock`).
-2. **Aplikasi Bisa Diinstal (PWA Installer & Manifest):**
-   - Menambahkan **Web App Manifest dinamis**, ikon aplikasi SVG resolusi tinggi (`192x192` & `512x512`), pendaftaran **Service Worker**, serta tombol **"Instal Aplikasi"** yang selalu terlihat di header kanan atas agar mudah dipasang di Laptop (Chrome/Edge) maupun Tablet Android/iPad.
