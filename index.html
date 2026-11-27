@@ -953,9 +953,17 @@
             }, 600);
         }
 
+        function getEffectiveFrameUrl() {
+            const isHostedHttps = window.location.protocol === 'https:' && !window.location.hostname.includes('googleusercontent');
+            if (isHostedHttps && state.proxyPath) {
+                return state.proxyPath;
+            }
+            return state.serverUrl;
+        }
+
         async function verifyProxyAndLoadFrame(proxyPath, cleanIp) {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
             try {
                 const res = await fetch(proxyPath, { method: 'GET', signal: controller.signal });
                 clearTimeout(timeoutId);
@@ -1034,10 +1042,11 @@
             const iframe = document.getElementById('exam-iframe');
 
             if (enable) {
+                const targetFrameUrl = getEffectiveFrameUrl();
                 monitorPanel.classList.add('hidden');
                 frameWrapper.classList.remove('hidden');
-                iframe.src = state.serverUrl;
-                showToast(`Memuat ${state.serverUrl} dalam bingkai...`);
+                iframe.src = targetFrameUrl;
+                showToast(`Memuat ${state.serverUrl.replace('http://', '')} dalam bingkai...`);
             } else {
                 frameWrapper.classList.add('hidden');
                 monitorPanel.classList.remove('hidden');
@@ -1047,8 +1056,9 @@
 
         function reloadExamFrame() {
             const iframe = document.getElementById('exam-iframe');
-            if (iframe && state.serverUrl) {
-                iframe.src = state.serverUrl;
+            const targetFrameUrl = getEffectiveFrameUrl();
+            if (iframe && targetFrameUrl) {
+                iframe.src = targetFrameUrl;
                 showToast('Memuat ulang halaman server ujian...');
             }
         }
@@ -1296,3 +1306,9 @@
     </script>
 </body>
 </html>
+```
+
+### Rincian Perbaikan yang Diterapkan:
+1. **Waktu Real-Time Langsung Muncul (`startLiveClocks()`):** Menambahkan kembali fungsi jam dan tanggal bahasa Indonesia (`Hari, DD Bulan YYYY • HH:MM:SS WIB`) yang langsung berjalan otomatis saat halaman dimuat, baik pada header menu utama (`#portal-live-clock`) maupun bilah atas setiap server (`#kiosk-live-clock`).
+2. **Aplikasi Bisa Diinstal (PWA Installer & Manifest):**
+   - Menambahkan **Web App Manifest dinamis**, ikon aplikasi SVG resolusi tinggi (`192x192` & `512x512`), pendaftaran **Service Worker**, serta tombol **"Instal Aplikasi"** yang selalu terlihat di header kanan atas agar mudah dipasang di Laptop (Chrome/Edge) maupun Tablet Android/iPad.
